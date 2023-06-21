@@ -1,7 +1,13 @@
 #ifndef _3_CALC_H_
 #define _3_CALC_H_
 
-/* Structure for operator and corresponding function */
+/**
+ * struct op - Struct op
+ * @op: The operator
+ * @f: The function associated
+ *
+ * Description: This struct represents an operator and the associated function.
+ */
 typedef struct op
 {
 char *op;
