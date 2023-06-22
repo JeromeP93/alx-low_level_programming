@@ -52,13 +52,11 @@ va_list args;
 unsigned int i = 0, j = 0;
 char *separator = "";
 
-typedef struct print_format
+struct print_format
 {
 char format;
 void (*printer)(va_list);
-} print_format;
-
-print_format valid_formats[] = {
+} valid_formats[] = {
 {'c', print_char},
 {'i', print_int},
 {'f', print_float},
