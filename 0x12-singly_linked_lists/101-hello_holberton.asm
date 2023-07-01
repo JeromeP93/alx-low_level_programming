@@ -1,21 +1,24 @@
 section .data
-    hello db 'Hello, Holberton', 0
-    prompt db 10, '>', ' ', 0   ; Updated prompt with newline character
+    hello_msg db "Hello, Holberton", 10, 0
 
 section .text
+    global main
     extern printf
 
-    global main
-    main:
-        sub rsp, 8             ; align stack
-        mov edi, hello         ; string to print
-        xor eax, eax           ; clear eax
-        call printf            ; call printf function
+main:
+    ; Set up the stack frame
+    push rbp
+    mov rbp, rsp
 
-        mov edi, prompt        ; string to print (prompt)
-        xor eax, eax           ; clear eax
-        call printf            ; call printf function
+    ; Store the string address in rdi
+    mov rdi, hello_msg
+    ; Call printf
+    call printf
 
-        add rsp, 8             ; restore stack
-        xor eax, eax           ; clear eax
-        ret                    ; return from main
+    ; Clean up the stack frame
+    mov rsp, rbp
+    pop rbp
+
+    ; Exit the program
+    mov eax, 0
+    ret
