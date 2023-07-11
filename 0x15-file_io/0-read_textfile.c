@@ -5,8 +5,8 @@
 #include "main.h"
 
 /**
- * read_textfile - Reads a text file and prints it to the
- * POSIX standard output.
+ * read_textfile - Reads a text file and prints it to
+ * the POSIX standard output.
  * @filename: The name of the file to read.
  * @letters: The number of letters to read and print.
  *
@@ -25,11 +25,10 @@ fd = open(filename, O_RDONLY);
 if (fd == -1)
 return (0);
 
-while (((res = read(fd, buffer, sizeof(buffer))) > 0)
-&& (total_read < (ssize_t)letters))
+while ((res = read(fd, buffer, sizeof(buffer))) > 0)
 {
 if (total_read + res > (ssize_t)letters)
-res = letters - total_read;
+res = (ssize_t)letters - total_read;
 
 total_written = write(STDOUT_FILENO, buffer, res);
 if (total_written == -1)
@@ -39,11 +38,13 @@ return (0);
 }
 
 total_read += res;
+if (total_read >= (ssize_t)letters)
+break;
 }
 
 close(fd);
 
-if ((res == -1) || (total_written != total_read))
+if (res == -1 || total_written != total_read)
 return (0);
 
 return (total_read);
