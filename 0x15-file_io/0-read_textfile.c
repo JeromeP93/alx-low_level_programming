@@ -3,8 +3,8 @@
 #include <unistd.h>
 
 /**
- * read_textfile - Reads a text file and prints it to the
- * POSIX standard output.
+ * read_textfile - Reads a text file and prints it
+ * to the POSIX standard output.
  * @filename: The name of the file to read.
  * @letters: The number of letters to read and print.
  *
@@ -13,7 +13,7 @@
 ssize_t read_textfile(const char *filename, size_t letters)
 {
 int fd;
-ssize_t n_read;
+ssize_t n_read, n_written;
 char buffer[1024];
 
 if (filename == NULL)
@@ -23,19 +23,21 @@ fd = open(filename, O_RDONLY);
 if (fd == -1)
 return (0);
 
-n_read = read(fd, buffer, letters);
+n_read = read(fd, buffer, sizeof(buffer));
 if (n_read == -1)
 {
 close(fd);
 return (0);
 }
 
-if (write(STDOUT_FILENO, buffer, n_read) == -1)
-{
-close(fd);
-return (0);
-}
+if (n_read > (ssize_t)letters)
+n_read = letters;
 
+n_written = write(STDOUT_FILENO, buffer, n_read);
 close(fd);
-return (n_read);
+
+if (n_written == -1 || n_written != n_read)
+return (0);
+
+return (n_written);
 }
