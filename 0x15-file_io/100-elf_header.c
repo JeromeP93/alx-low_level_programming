@@ -2,77 +2,140 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "main.h"
+#include <elf.h>
 
-#define BUFFER_SIZE 64
+#define BUFFER_SIZE 1024
 
-/**
- * error_exit - Prints an error message and exits with the specified code.
- * @code: The exit code.
- * @message: The error message to print.
- */
-void error_exit(int code, const char *message)
-{
-dprintf(STDERR_FILENO, "%s\n", message);
-exit(code);
-}
+void display_elf_header(Elf64_Ehdr *header);
 
 /**
- * print_header_field - Prints the name and value of a header field.
- * @name: The name of the field.
- * @value: The value of the field.
- */
-void print_header_field(const char *name, const char *value)
-{
-printf("%-35s%s\n", name, value);
-}
-
-/**
- * elf_header - Displays the information contained in the ELF header of a file.
- * @filename: The name of the file.
- */
-void elf_header(const char *filename)
-{
-int fd, res;
-char buffer[BUFFER_SIZE];
-
-if (filename == NULL)
-error_exit(98, "Usage: elf_header elf_filename");
-
-fd = open(filename, O_RDONLY);
-if (fd == -1)
-error_exit(98, "Error: Can't read from file");
-
-if (read(fd, buffer, BUFFER_SIZE) != BUFFER_SIZE)
-error_exit(98, "Error: Can't read from file");
-
-print_header_field("Magic:", buffer);
-print_header_field("Class:", buffer + 4);
-print_header_field("Data:", buffer + 5);
-print_header_field("Version:", buffer + 6);
-print_header_field("OS/ABI:", buffer + 7);
-print_header_field("ABI Version:", buffer + 8);
-print_header_field("Type:", buffer + 16);
-print_header_field("Entry point address:", buffer + 24);
-
-res = close(fd);
-if (res == -1)
-error_exit(100, "Error: Can't close fd");
-}
-
-/**
- * main - Entry point.
- * @argc: The argument count.
- * @argv: The argument vector.
- *
- * Return: 0 on success, 1 on failure.
+ * main - Entry point
+ * @argc: Argument count
+ * @argv: Argument vector
+ * Return: 0 on success, 98 on error
  */
 int main(int argc, char **argv)
 {
-if (argc != 2)
-error_exit(98, "Usage: elf_header elf_filename");
+	int file, read_bytes;
+	Elf64_Ehdr header;
 
-elf_header(argv[1]);
+	if (argc != 2)
+	{
+		dprintf(2, "Usage: elf_header elf_filename\n");
+		exit(98);
+	}
 
-return (0);
+	file = open(argv[1], O_RDONLY);
+	if (file == -1)
+	{
+		dprintf(2, "Error: Cannot open file '%s'\n", argv[1]);
+		exit(98);
+	}
+
+	read_bytes = read(file, &header, sizeof(header));
+	if (read_bytes != sizeof(header))
+	{
+		dprintf(2, "Error: Cannot read from file '%s'\n", argv[1]);
+		close(file);
+		exit(98);
+	}
+
+	display_elf_header(&header);
+
+	close(file);
+	return 0;
+}
+
+/**
+ * display_elf_header - Display ELF header information
+ * @header: Pointer to the ELF header
+ */
+void display_elf_header(Elf64_Ehdr *header)
+{
+	int i;
+	char *class_desc, *data_desc, *osabi_desc, *type_desc;
+
+	printf("ELF Header:\n");
+
+	printf("  Magic:   ");
+	for (i = 0; i < EI_NIDENT; i++)
+		printf("%02x ", header->e_ident[i]);
+	printf("\n");
+
+	switch (header->e_ident[EI_CLASS])
+	{
+	case ELFCLASS32:
+		class_desc = "ELF32";
+		break;
+	case ELFCLASS64:
+		class_desc = "ELF64";
+		break;
+	default:
+		class_desc = "Invalid class";
+		break;
+	}
+	printf("  Class:                             %s\n", class_desc);
+
+	switch (header->e_ident[EI_DATA])
+	{
+	case ELFDATA2LSB:
+		data_desc = "2's complement, little endian";
+		break;
+	case ELFDATA2MSB:
+		data_desc = "2's complement, big endian";
+		break;
+	default:
+		data_desc = "Invalid data encoding";
+		break;
+	}
+	printf("  Data:                              %s\n", data_desc);
+
+	printf("  Version:                           %d (current)\n", header->e_ident[EI_VERSION]);
+
+	switch (header->e_ident[EI_OSABI])
+	{
+	case ELFOSABI_SYSV:
+		osabi_desc = "UNIX - System V";
+		break;
+	case ELFOSABI_NETBSD:
+		osabi_desc = "UNIX - NetBSD";
+		break;
+	case ELFOSABI_LINUX:
+		osabi_desc = "UNIX - Linux";
+		break;
+	case ELFOSABI_SOLARIS:
+		osabi_desc = "UNIX - Solaris";
+		break;
+	default:
+		osabi_desc = "Other";
+		break;
+	}
+	printf("  OS/ABI:                            %s\n", osabi_desc);
+
+	printf("  ABI Version:                       %d\n", header->e_ident[EI_ABIVERSION]);
+
+	switch (header->e_type)
+	{
+	case ET_NONE:
+		type_desc = "NONE (No file type)";
+		break;
+	case ET_REL:
+		type_desc = "REL (Relocatable file)";
+		break;
+	case ET_EXEC:
+		type_desc = "EXEC (Executable file)";
+		break;
+	case ET_DYN:
+		type_desc = "DYN (Shared object file)";
+		break;
+	case ET_CORE:
+		type_desc = "CORE (Core file)";
+		break;
+	default:
+		type_desc = "Other";
+		break;
+	}
+	printf("  Type:                              %s\n", type_desc);
+
+	printf("  Entry point address:               0x%lx\n", (unsigned long)header->e_entry);
 }
