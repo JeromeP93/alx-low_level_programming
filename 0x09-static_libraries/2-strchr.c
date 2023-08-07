@@ -10,17 +10,17 @@
  */
 char *_strchr(char *s, char c)
 {
-while (*s != '\0')
-{
-if (*s == c)
-return (s);
+    while (*s != '\0')
+    {
+        if (*s == c)
+            return (s);
 
-s++;
-}
+        s++;
+    }
 
-/* Check if the character is the null terminator */
-if (*s == c)
-return (s);
+    /* Check if the character is the null terminator */
+    if (*s == c)
+        return (s);
 
-return (NULL); /* Character not found */
+    return (NULL); /* Character not found */
 }

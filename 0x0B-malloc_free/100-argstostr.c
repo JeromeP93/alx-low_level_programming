@@ -10,21 +10,21 @@
  */
 int get_total_length(int ac, char **av)
 {
-int total_len = 0;
-int i, j;
+    int total_len = 0;
+    int i, j;
 
-for (i = 0; i < ac; i++)
-{
-j = 0;
-while (av[i][j] != '\0')
-{
-total_len++;
-j++;
-}
-total_len++; /* Account for newline character */
-}
+    for (i = 0; i < ac; i++)
+    {
+        j = 0;
+        while (av[i][j] != '\0')
+        {
+            total_len++;
+            j++;
+        }
+        total_len++; /* Account for newline character */
+    }
 
-return (total_len);
+    return (total_len);
 }
 
 /**
@@ -35,22 +35,22 @@ return (total_len);
  */
 void copy_arguments(int ac, char **av, char *str)
 {
-int i, j;
-int k = 0;
+    int i, j;
+    int k = 0;
 
-for (i = 0; i < ac; i++)
-{
-j = 0;
-while (av[i][j] != '\0')
-{
-str[k] = av[i][j];
-j++;
-k++;
-}
-str[k] = '\n'; /* Append newline character */
-k++;
-}
-str[k] = '\0'; /* Add null terminator at the end */
+    for (i = 0; i < ac; i++)
+    {
+        j = 0;
+        while (av[i][j] != '\0')
+        {
+            str[k] = av[i][j];
+            j++;
+            k++;
+        }
+        str[k] = '\n'; /* Append newline character */
+        k++;
+    }
+    str[k] = '\0'; /* Add null terminator at the end */
 }
 
 /**
@@ -63,19 +63,19 @@ str[k] = '\0'; /* Add null terminator at the end */
  */
 char *argstostr(int ac, char **av)
 {
-char *str;
-int total_len;
+    char *str;
+    int total_len;
 
-if (ac == 0 || av == NULL)
-return (NULL);
+    if (ac == 0 || av == NULL)
+        return (NULL);
 
-total_len = get_total_length(ac, av);
+    total_len = get_total_length(ac, av);
 
-str = malloc(sizeof(char) * (total_len + 1));
-if (str == NULL)
-return (NULL);
+    str = malloc(sizeof(char) * (total_len + 1));
+    if (str == NULL)
+        return (NULL);
 
-copy_arguments(ac, av, str);
+    copy_arguments(ac, av, str);
 
-return (str);
+    return (str);
 }

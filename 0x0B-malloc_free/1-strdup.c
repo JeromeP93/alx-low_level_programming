@@ -11,25 +11,25 @@
  */
 char *_strdup(char *str)
 {
-char *duplicate;
-unsigned int length = 0;
-unsigned int i;
+    char *duplicate;
+    unsigned int length = 0;
+    unsigned int i;
 
-if (str == NULL)
-return (NULL);
+    if (str == NULL)
+        return (NULL);
 
-/* Calculate the length of the string */
-while (str[length] != '\0')
-length++;
+    /* Calculate the length of the string */
+    while (str[length] != '\0')
+        length++;
 
-/* Allocate memory for the duplicate string */
-duplicate = malloc(sizeof(char) * (length + 1));
-if (duplicate == NULL)
-return (NULL);
+    /* Allocate memory for the duplicate string */
+    duplicate = malloc(sizeof(char) * (length + 1));
+    if (duplicate == NULL)
+        return (NULL);
 
-/* Copy the string into the duplicate */
-for (i = 0; i <= length; i++)
-duplicate[i] = str[i];
+    /* Copy the string into the duplicate */
+    for (i = 0; i <= length; i++)
+        duplicate[i] = str[i];
 
-return (duplicate);
+    return (duplicate);
 }

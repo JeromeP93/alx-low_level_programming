@@ -7,11 +7,11 @@
  */
 int get_endianness(void)
 {
-unsigned int value = 1;
-char *ptr = (char *)&value;
+    unsigned int value = 1;
+    char *ptr = (char *)&value;
 
-if (*ptr)
-return (1);  /* Little Endian */
-else
-return (0);  /* Big Endian */
+    if (*ptr)
+        return (1); /* Little Endian */
+    else
+        return (0); /* Big Endian */
 }

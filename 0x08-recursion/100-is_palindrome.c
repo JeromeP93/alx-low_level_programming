@@ -10,14 +10,14 @@
  */
 int is_palindrome(char *s)
 {
-int length = strlen(s);
+    int length = strlen(s);
 
-if (length <= 1)
-return (1);
+    if (length <= 1)
+        return (1);
 
-if (s[0] != s[length - 1])
-return (0);
+    if (s[0] != s[length - 1])
+        return (0);
 
-/* Recursive call with the substring excluding the first and last characters */
-return (is_palindrome(s + 1) && is_palindrome(s + length - 1));
+    /* Recursive call with the substring excluding the first and last characters */
+    return (is_palindrome(s + 1) && is_palindrome(s + length - 1));
 }

@@ -44,17 +44,17 @@ char *copy_word(char *str, int start, int length);
  */
 int count_words(char *str)
 {
-int count = 0;
-int i = 0;
+    int count = 0;
+    int i = 0;
 
-while (str[i] != '\0')
-{
-if (str[i] != ' ' && (str[i + 1] == ' ' || str[i + 1] == '\0'))
-count++;
-i++;
-}
+    while (str[i] != '\0')
+    {
+        if (str[i] != ' ' && (str[i + 1] == ' ' || str[i + 1] == '\0'))
+            count++;
+        i++;
+    }
 
-return (count);
+    return (count);
 }
 
 /**
@@ -67,15 +67,15 @@ return (count);
  */
 int get_word_length(char *str, int start)
 {
-int length = 0;
+    int length = 0;
 
-while (str[start] != ' ' && str[start] != '\0')
-{
-length++;
-start++;
-}
+    while (str[start] != ' ' && str[start] != '\0')
+    {
+        length++;
+        start++;
+    }
 
-return (length);
+    return (length);
 }
 
 /**
@@ -87,13 +87,13 @@ return (length);
  */
 void free_words(char **words, int count)
 {
-int i;
+    int i;
 
-for (i = 0; i < count; i++)
-{
-free(words[i]);
-}
-free(words);
+    for (i = 0; i < count; i++)
+    {
+        free(words[i]);
+    }
+    free(words);
 }
 
 /**
@@ -107,19 +107,19 @@ free(words);
  */
 char *copy_word(char *str, int start, int length)
 {
-char *word = malloc(sizeof(char) * (length + 1));
-int i;
+    char *word = malloc(sizeof(char) * (length + 1));
+    int i;
 
-if (word == NULL)
-return (NULL);
+    if (word == NULL)
+        return (NULL);
 
-for (i = 0; i < length; i++, start++)
-{
-word[i] = str[start];
-}
-word[length] = '\0';
+    for (i = 0; i < length; i++, start++)
+    {
+        word[i] = str[start];
+    }
+    word[length] = '\0';
 
-return (word);
+    return (word);
 }
 
 /**
@@ -133,38 +133,38 @@ return (word);
  */
 char **strtow(char *str)
 {
-char **words;
-int word_count, word_index = 0;
-int str_index = 0;
+    char **words;
+    int word_count, word_index = 0;
+    int str_index = 0;
 
-if (str == NULL || *str == '\0')
-return (NULL);
+    if (str == NULL || *str == '\0')
+        return (NULL);
 
-word_count = count_words(str);
-words = malloc(sizeof(char *) * (word_count + 1));
-if (words == NULL)
-return (NULL);
+    word_count = count_words(str);
+    words = malloc(sizeof(char *) * (word_count + 1));
+    if (words == NULL)
+        return (NULL);
 
-while (str[str_index] != '\0')
-{
-if (str[str_index] != ' ')
-{
-int word_length = get_word_length(str, str_index);
-words[word_index] = copy_word(str, str_index, word_length);
-if (words[word_index] == NULL)
-{
-free_words(words, word_index);
-return (NULL);
-}
-str_index += word_length;
-word_index++;
-}
-else
-{
-str_index++;
-}
-}
-words[word_index] = NULL;
+    while (str[str_index] != '\0')
+    {
+        if (str[str_index] != ' ')
+        {
+            int word_length = get_word_length(str, str_index);
+            words[word_index] = copy_word(str, str_index, word_length);
+            if (words[word_index] == NULL)
+            {
+                free_words(words, word_index);
+                return (NULL);
+            }
+            str_index += word_length;
+            word_index++;
+        }
+        else
+        {
+            str_index++;
+        }
+    }
+    words[word_index] = NULL;
 
-return (words);
+    return (words);
 }
